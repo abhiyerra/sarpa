@@ -24,11 +24,7 @@ func init() {
 }
 
 func main() {
-	// ng := Nginx{
-	// 	ServerNames: []string{"a", "b"},
-	// 	Proxies:     []string{"b", "c"},
-	// }
-
-	// fmt.Println(ng.Config())
-
+	for i := range config.Services {
+		log.Println(config.Services[i].Config())
+	}
 }
