@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/coreos/go-etcd/etcd"
+	"log"
 )
 
 func EtcdServicePath(serviceName string) string {
@@ -10,9 +11,23 @@ func EtcdServicePath(serviceName string) string {
 }
 
 // TODO: For client use.
-func EtcdInsertHost(client *etcd.Client, serviceName, host string) bool {
-	// Create a directory in /sarpa/:service_name
-	// Create a random child in the directory with key=host value=ip. Set ttl=30seconds
-	// On quit kill the child if possible
+func SarpaUpdater(client *etcd.Client, serviceName, host string, ttl int) bool {
+	servicePath := EtcdServicePath(serviceName)
+
+	if _, err := client.Get(servicePath, false, false); err != nil {
+		// Directory doesn't exist.
+
+		_, err := client.CreateDir(servicePath, 300)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
+	// Create a random child in the directory with value=host. Set ttl=30seconds
+	_, err := client.AddChild(servicePath, host, 30)
+	if err != nil {
+		log.Println(err)
+	}
+
 	return false
 }
