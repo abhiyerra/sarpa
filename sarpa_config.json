@@ -1,0 +1,8 @@
+[{
+    "service_name": "treemap",
+    "hosts": ["treemap.org", "www.treemap.org"]
+},
+{
+    "service_name": "forestly",
+    "hosts": ["forestly.org", "www.forestly.org"]
+}]

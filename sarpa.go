@@ -1,48 +1,67 @@
-/*
-
-- [ ] Connect to etcd.
-- [ ] For each of the services on the configuration.
-- [ ] Check and update the configuration file
-- [ ] Start or restart the service.
-*/
 package main
 
 import (
-	"fmt"
-	"strings"
+	"flag"
+	"log"
+	//	"fmt"
+	//	"strings"
 )
 
-type Nginx struct {
-	ServerNames []string
-	Proxies     []string
+var (
+	config *Config
+)
+
+type Service struct {
+	Name     string   `json:"service_name"`
+	Hosts    []string `json:"hosts"`
+	Ssl      bool     `json:"ssl"`
+	CertPath string   `json:"cert_path"`
 }
 
-func (n *Nginx) Config() string {
+// type Nginx struct {
+// 	ServerNames []string
+// 	Proxies     []string
+// }
 
-	var ProxyPasses []string
-	for _, i := range n.Proxies {
-		ProxyPasses = append(ProxyPasses, fmt.Sprintf("        proxy_pass %s;", i))
+// func (n *Service) Config() string {
+
+// 	var ProxyPasses []string
+// 	for _, i := range n.Proxies {
+// 		ProxyPasses = append(ProxyPasses, fmt.Sprintf("        proxy_pass %s;", i))
+// 	}
+
+// 	return fmt.Sprintf(`server {
+//     server_name %s;
+//     listen 8080;
+
+//     location / {
+// %s
+//     }
+// }`,
+// 		strings.Join(n.ServerNames, ", "),
+// 		strings.Join(ProxyPasses, "\n"),
+// 	)
+
+// }
+
+func init() {
+	var configFile = flag.String("config", "", "configuration for services")
+	flag.Parse()
+
+	if *configFile == "" {
+		log.Fatal("Need config file")
 	}
 
-	return fmt.Sprintf(`server {
-    server_name %s;
-    listen 8080;
-
-    location / {
-%s
-    }
-}`,
-		strings.Join(n.ServerNames, ", "),
-		strings.Join(ProxyPasses, "\n"),
-	)
-
+	config = &Config{}
+	config.Parse(*configFile)
 }
 
 func main() {
-	ng := Nginx{
-		ServerNames: []string{"a", "b"},
-		Proxies:     []string{"b", "c"},
-	}
+	// ng := Nginx{
+	// 	ServerNames: []string{"a", "b"},
+	// 	Proxies:     []string{"b", "c"},
+	// }
 
-	fmt.Println(ng.Config())
+	// fmt.Println(ng.Config())
+
 }
