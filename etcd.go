@@ -10,7 +10,6 @@ func EtcdServicePath(serviceName string) string {
 	return fmt.Sprintf("/sarpa/%s", serviceName)
 }
 
-// TODO: For client use.
 func SarpaUpdater(client *etcd.Client, serviceName, host string, ttl int) bool {
 	servicePath := EtcdServicePath(serviceName)
 

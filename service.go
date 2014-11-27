@@ -48,21 +48,24 @@ func (n *Service) Watchman(client *etcd.Client) {
 	log.Println("Starting watchman for", n.Name)
 
 	for {
-		log.Println(n.Config())
-
 		// Get the nodes and their values.
 		resp, err := client.Get(EtcdServicePath(n.Name), false, false)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
+		} else {
+			var newProxies []string
+			for _, n := range resp.Node.Nodes {
+				log.Printf("%s: %s\n", n.Key, n.Value)
+				newProxies = append(newProxies, n.Value)
+			}
+			n.ProxyPasses = newProxies
 		}
 
-		for _, n := range resp.Node.Nodes {
-			log.Printf("%s: %s\n", n.Key, n.Value)
-		}
+		log.Println(n.Config())
 
 		// Watch for changes to the values
 		watchChan := make(chan *etcd.Response)
-		go client.Watch(EtcdServicePath(n.Name), 0, false, watchChan, nil)
+		go client.Watch(EtcdServicePath(n.Name), 0, true, watchChan, nil)
 		log.Println("Waiting for an update...")
 
 		select {
