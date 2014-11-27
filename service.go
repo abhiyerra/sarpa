@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/coreos/go-etcd/etcd"
+	"log"
 	"strings"
+	"time"
 )
 
 type Service struct {
@@ -39,4 +42,34 @@ func (n *Service) Config() string {
 		n.HostNames(),
 		n.Proxies(),
 	)
+}
+
+func (n *Service) Watchman(client *etcd.Client) {
+	log.Println("Starting watchman for", n.Name)
+
+	for {
+		log.Println(n.Config())
+
+		// Get the nodes and their values.
+		resp, err := client.Get(EtcdServicePath(n.Name), false, false)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		for _, n := range resp.Node.Nodes {
+			log.Printf("%s: %s\n", n.Key, n.Value)
+		}
+
+		// Watch for changes to the values
+		watchChan := make(chan *etcd.Response)
+		go client.Watch(EtcdServicePath(n.Name), 0, false, watchChan, nil)
+		log.Println("Waiting for an update...")
+
+		select {
+		case r := <-watchChan:
+			log.Printf("Got updated creds: %s: %s\n", r.Node.Key, r.Node.Value)
+		case <-time.After(time.Second * 10):
+			log.Println(n.Name, "timeout. Watching again")
+		}
+	}
 }

@@ -2,9 +2,8 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
-	//	"fmt"
-	//	"strings"
 )
 
 var (
@@ -21,10 +20,12 @@ func init() {
 
 	config = &Config{}
 	config.Parse(*configFile)
+	config.EtcdConnect()
 }
 
 func main() {
-	for i := range config.Services {
-		log.Println(config.Services[i].Config())
-	}
+	config.StartWatchmen()
+
+	var i int
+	fmt.Scanf("%d", &i)
 }
