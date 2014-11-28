@@ -1,4 +1,4 @@
-package main
+package sarpa
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-func EtcdServicePath(serviceName string) string {
+func etcdServicePath(serviceName string) string {
 	return fmt.Sprintf("/sarpa/%s", serviceName)
 }
 
