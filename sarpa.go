@@ -28,6 +28,7 @@ func main() {
 	config.StartWatchmen(restart)
 
 	for {
+		log.Println("restarting")
 		<-restart
 	}
 }

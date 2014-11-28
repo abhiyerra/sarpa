@@ -77,8 +77,8 @@ func (n *Service) Watchman(client *etcd.Client, restart chan bool) {
 
 		select {
 		case r := <-watchChan:
-			log.Printf("Got updated creds: %s: %s\n", r.Node.Key, r.Node.Value)
-		case <-time.After(time.Second * 10):
+			log.Printf("Got updated hosts: %s: %s\n", r.Node.Key, r.Node.Value)
+		case <-time.After(time.Second * 2000):
 			log.Println(n.Name, "timeout. Watching again")
 		}
 
