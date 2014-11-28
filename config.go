@@ -29,8 +29,8 @@ func (c *Config) EtcdConnect() {
 
 }
 
-func (c *Config) StartWatchmen() {
+func (c *Config) StartWatchmen(restart chan bool) {
 	for i := range config.Services {
-		go config.Services[i].Watchman(c.etcdClient)
+		go config.Services[i].Watchman(c.etcdClient, restart)
 	}
 }

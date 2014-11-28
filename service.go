@@ -48,7 +48,7 @@ func etcdServicePath(serviceName string) string {
 	return fmt.Sprintf("/sarpa/%s", serviceName)
 }
 
-func (n *Service) Watchman(client *etcd.Client) {
+func (n *Service) Watchman(client *etcd.Client, restart chan bool) {
 	log.Println("Starting watchman for", n.Name)
 
 	servicePath := etcdServicePath(n.Name)
@@ -81,5 +81,7 @@ func (n *Service) Watchman(client *etcd.Client) {
 		case <-time.After(time.Second * 10):
 			log.Println(n.Name, "timeout. Watching again")
 		}
+
+		restart <- true
 	}
 }

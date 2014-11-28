@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 )
 
@@ -24,8 +23,11 @@ func init() {
 }
 
 func main() {
-	config.StartWatchmen()
+	restart := make(chan bool)
 
-	var i int
-	fmt.Scanf("%d", &i)
+	config.StartWatchmen(restart)
+
+	for {
+		<-restart
+	}
 }
