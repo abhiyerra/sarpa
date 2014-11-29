@@ -14,10 +14,10 @@ func etcdServicePath(serviceName string) string {
 // This method should be called every ttl to make sure that etcd has
 // the current value and sarpa can still talk to this host.
 //
-// client - The etcd client used to talk to etcd.
-// serviceName - The name of the service which will be proxied to from sarpa.
-// hostIp - Update the hostIp so that sarpa can connect to this host.
-// ttl - How long to keep this host alive for.
+//  - client: The etcd client used to talk to etcd.
+//  - serviceName: The name of the service which will be proxied to from sarpa.
+//  - hostIp: Update the hostIp so that sarpa can connect to this host.
+//  - ttl: How long to keep this host alive for.
 //
 // This method should be run every ttl seconds. So that sarpa can have
 // the correct hosts.
