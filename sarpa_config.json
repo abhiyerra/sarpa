@@ -1,5 +1,6 @@
 {
     "etcd_hosts": ["http://127.0.0.1:4001"],
+    "restart_cmd": "service nginx restart"
     "services": [
         {
             "service_name": "treemap",

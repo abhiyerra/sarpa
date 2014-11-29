@@ -29,6 +29,8 @@ func main() {
 
 	for {
 		log.Println("restarting")
+
 		<-restart
+		config.NginxRestart()
 	}
 }
