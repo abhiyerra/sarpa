@@ -29,8 +29,10 @@ The configuration is JSON definition of key values:
 
 etcd_hosts
 : An array of etcd hosts to connect to.
+
 restart_cmd
 : The command to restart nginx
+
 services
 : A list of objects defining the service_name and an array of hostnames.
 
