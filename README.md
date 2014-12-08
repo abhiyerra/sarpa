@@ -2,50 +2,48 @@
 
 # Sarpa
 
-Sarpa is a HTTP/HTTPS proxy for web services which use service
-discovery tools like etcd. Right now it supports nginx and etcd.
+Sarpa is a poor man's service discovery system. It is made to be used
+with Docker instances. So when an Docker instance is started up it
+reports itself on etcd with the public ip and port to connect
+to. Sarpa watches for these key changes. And updates a file in S3
+which has key values of service to machines.
+
+# Running
+
+    export AWS_ACCESS_KEY_ID=<your access key id>
+    export AWS_SECRET_ACCESS_KEY=<your secret key>
+    export ETCD_HOSTS="http://127.0.0.1:4001"
+    export SARPA_BUCKET="discovery.forestly.org"
+    ./sarpa
+
+# Etcd Keys
+
+The keys for the discovery looks like the following. It always looks
+in the /sarpa directory. The next key is the s3 bucket to push the
+configuration file to. The value after that is the service short name.
+
+In that directory you can create children which include the public_host:port
+so the clients can connect to them.
+
+    /sarpa/:service/:machine_id
+
+Example:
+
+    etcdctl set /sarpa/treely/1 "104.236.59.43:3001"
+
+Example with fleet for the service.
 
 
-# Configuration
+    [Unit]
+    Description=treely
 
-The configuration is JSON definition of key values:
+    [Service]
+    ExecStartPre=-/usr/bin/docker kill treely-%i
+    ExecStartPre=-/usr/bin/docker rm treely-%i
+    ExecStart=/usr/bin/docker run --rm --name treely-%i -p 8080:8080 forestly/treely
+    ExecStartPost=/usr/bin/etcdctl set /sarpa/treely/%m %H:%i
+    ExecStop=/usr/bin/docker stop treely-%i
+    ExecStopPost=/usr/bin/etcdctl rm /sarpa/treemly/%m
 
-
-    {
-        "etcd_hosts": ["http://127.0.0.1:4001"],
-        "restart_cmd": "service nginx restart"
-        "services": [
-            {
-                "service_name": "treemap",
-                "hosts": ["treemap.org", "www.treemap.org"]
-            },
-            {
-                "service_name": "forestly",
-                "hosts": ["forestly.org", "www.forestly.org"]
-            }
-        ]
-    }
-
-
-etcd_hosts
-: An array of etcd hosts to connect to.
-
-restart_cmd
-: The command to restart nginx
-
-services
-: A list of objects defining the service_name and an array of hostnames.
-
-# Client
-
-There is a Sarpa client in the client directory
-
-    go get -u github.com/abhiyerra/sarpa/client
-
-To run the code in you Go application call:
-
-  SarpaUpdater()
-
-Please look at the
-[godocs](http://godoc.org/github.com/abhiyerra/sarpa/client) for the
-client to understand how it works.
+    [X-Fleet]
+    Conflicts=treely@*.service
