@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/coreos/go-etcd/etcd"
 	"github.com/crowdmob/goamz/aws"
 	"github.com/crowdmob/goamz/s3"
@@ -74,7 +75,7 @@ func (c *Config) UploadToS3() {
 	}
 	bucket := c.s3Auth.Bucket(c.S3Bucket)
 
-	err := bucket.Put("discovery.json", c.jsonedServices(), "text/javascript", s3.PublicRead, s3.Options{})
+	err := bucket.Put("discovery.json", []byte(fmt.Sprintf("JSON_CALLBACK(%s)", c.jsonedServices())), "text/javascript", s3.PublicRead, s3.Options{})
 	if err != nil {
 		log.Println(err)
 	}

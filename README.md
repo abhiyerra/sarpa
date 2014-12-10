@@ -31,19 +31,21 @@ Example:
 
     etcdctl set /sarpa/treely/1 "104.236.59.43:3001"
 
-Example with fleet for the service.
+# Example of a service reporting to sarpa
 
+Here is a an example for treemap. It is a fleet script which runs the
+service on a CoreOS cluster.
 
     [Unit]
-    Description=treely
+    Description=treemap
 
     [Service]
-    ExecStartPre=-/usr/bin/docker kill treely-%i
-    ExecStartPre=-/usr/bin/docker rm treely-%i
-    ExecStart=/usr/bin/docker run --rm --name treely-%i -p 8080:8080 forestly/treely
-    ExecStartPost=/usr/bin/etcdctl set /sarpa/treely/%m %H:%i
-    ExecStop=/usr/bin/docker stop treely-%i
-    ExecStopPost=/usr/bin/etcdctl rm /sarpa/treemly/%m
+    ExecStartPre=-/usr/bin/docker kill treemap-%i
+    ExecStartPre=-/usr/bin/docker rm treemap-%i
+    ExecStart=/usr/bin/docker run --rm --name treemap-%i -p 3001:3001 forestly/treely
+    ExecStartPost=/usr/bin/etcdctl set /sarpa/treemap/%m http://%H:3001
+    ExecStop=/usr/bin/docker stop treemap-%i
+    ExecStopPost=/usr/bin/etcdctl rm /sarpa/treemap/%m
 
     [X-Fleet]
-    Conflicts=treely@*.service
+    Conflicts=treemap@*.service

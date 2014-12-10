@@ -1,0 +1,15 @@
+[Unit]
+Description=sarpa
+
+[Service]
+EnvironmentFile=/etc/aws_keys
+ExecStartPre=-/usr/bin/docker pull abhiyerra/sarpa
+ExecStartPre=-/usr/bin/docker kill sarpa-treemap
+ExecStartPre=-/usr/bin/docker rm sarpa-treemap
+ExecStart=/usr/bin/docker run --rm -e "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}" -e "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}" -e "SARPA_BUCKET=discovery.treemap.org" -e "ETCD_HOSTS=http://172.17.42.1:4001" --name sarpa-treemap abhiyerra/sarpa
+ExecStop=/usr/bin/docker stop sarpa-treemap
+RestartSec=5
+Restart=on-failure
+
+[X-Fleet]
+Conflicts=sarpa@*.service
