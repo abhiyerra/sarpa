@@ -6,9 +6,13 @@ import (
 	"testing"
 )
 
-func TestSarpa(t *testing.T) {
+var (
+	client *etcd.Client
+)
+
+func SetupEtcd() {
 	// Setup
-	client := etcd.NewClient([]string{"http://127.0.0.1:4001"})
+	client = etcd.NewClient([]string{"http://127.0.0.1:4001"})
 	client.CreateDir("/sarpa", 200)
 
 	client.CreateDir("/sarpa/blah", 200)
@@ -19,6 +23,15 @@ func TestSarpa(t *testing.T) {
 	client.AddChild("/sarpa/hay", "4", 200)
 	client.AddChild("/sarpa/hay", "5", 200)
 	client.AddChild("/sarpa/hay", "6", 200)
+}
+
+func CleanUpEtcd() {
+	// Clean up
+	client.Delete("/sarpa", true)
+}
+
+func TestSarpa(t *testing.T) {
+	SetupEtcd()
 
 	config := &Config{}
 	config.EtcdConnect([]string{"http://127.0.0.1:4001"})
@@ -36,6 +49,5 @@ func TestSarpa(t *testing.T) {
 
 	log.Println(string(config.jsonedServices()))
 
-	// Clean up
-	client.Delete("/sarpa", true)
+	CleanUpEtcd()
 }
