@@ -75,7 +75,7 @@ func (c *Config) UploadToS3() {
 	}
 	bucket := c.s3Auth.Bucket(c.S3Bucket)
 
-	err := bucket.Put("discovery.json", []byte(fmt.Sprintf("JSON_CALLBACK(%s)", c.jsonedServices())), "text/javascript", s3.PublicRead, s3.Options{})
+	err := bucket.Put("discovery.js", []byte(fmt.Sprintf("var SarpaServiceDiscovery = %s;", c.jsonedServices())), "text/javascript", s3.PublicRead, s3.Options{})
 	if err != nil {
 		log.Println(err)
 	}
@@ -127,6 +127,7 @@ func init() {
 	config.AwsConnect()
 
 	config.S3Bucket = os.Getenv("SARPA_BUCKET")
+	log.Println("S3 Bucket", config.S3Bucket)
 }
 
 func main() {

@@ -29,7 +29,7 @@ so the clients can connect to them.
 
 Example:
 
-    etcdctl set /sarpa/treely/1 "104.236.59.43:3001"
+    etcdctl set /sarpa/treely/1 "http://1.2.3.4:3001"
 
 # Example of a service reporting to sarpa
 
@@ -49,3 +49,10 @@ service on a CoreOS cluster.
 
     [X-Fleet]
     Conflicts=treemap@*.service
+
+# Usage in Javascript
+
+   <script src="http://youbucket.aws.com/discovery.js"></script>
+   <script>
+      console.log(SarpaServiceDiscovery);
+   </script>
