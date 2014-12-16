@@ -53,10 +53,12 @@ service on a CoreOS cluster.
 
 # Usage in Javascript
 
-   <script src="http://youbucket.aws.com/discovery.js"></script>
-   <script>
-      console.log(SarpaServiceDiscovery);
-   </script>
+```javascript
+<script src="http://youbucket.aws.com/discovery.js"></script>
+<script>
+   console.log(SarpaServiceDiscovery);
+</script>
+```
 
 # Network Diagram
 ![Network Diagram](usage.png)
