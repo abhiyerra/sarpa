@@ -40,6 +40,7 @@ service on a CoreOS cluster.
     Description=treemap
 
     [Service]
+    ExecStartPre=-/usr/bin/docker pull forestly/treely
     ExecStartPre=-/usr/bin/docker kill treemap-%i
     ExecStartPre=-/usr/bin/docker rm treemap-%i
     ExecStart=/usr/bin/docker run --rm --name treemap-%i -p 3001:3001 forestly/treely
@@ -56,3 +57,6 @@ service on a CoreOS cluster.
    <script>
       console.log(SarpaServiceDiscovery);
    </script>
+
+# Network Diagram
+![Network Diagram](usage.png)
